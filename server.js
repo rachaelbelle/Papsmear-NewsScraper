@@ -20,6 +20,7 @@ var Article = require("./models/Article.js");
 var PORT = 3000;
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+// this isn't working..  grrr
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";
 
 mongoose.connect(MONGODB_URI);

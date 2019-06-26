@@ -21,9 +21,9 @@ var PORT = 3000;
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 // this isn't working..  grrr
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";
 
-mongoose.connect(MONGODB_URI);
+// mongoose.connect(MONGODB_URI);
 
 // Initialize Express
 var app = express();
@@ -38,8 +38,7 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
-// Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/Papsmear-NewsScraper", { useNewUrlParser: true });
+
 
 app.engine("handlebars", exphbs({
   defaultLayout: "main",
@@ -71,67 +70,48 @@ app.get("/saved", function (req, res) {
 });
 
 
-// A GET request to scrape the echojs website
+// A GET request to scrape the NYTimes website
 app.get("/scrape", function (req, res) {
   // First, we grab the body of the html with request
-  request("https://www.nytimes.com/", function (error, response, html) {
-    // Then, we load that into cheerio and save it to $ for a shorthand selector
-    var $ = cheerio.load(html);
-    // Now, we grab every h2 within an article tag, and do the following:
+  axios.get("https://www.nytimes.com/").then(function(response){
+    var $ = cheerio.load(response.data);
     $("article").each(function (i, element) {
+     var result = {};
+     result.title = $(element).find('h2.esl82me0').text();
+      result.link= $(element).find('a').attr('href');
+      result.description = $(element).find('p.e1n8kpyg0').text();
+       db.Article.create(result).then(function(articles){
+      console.log(articles)
+       }).catch(function(err){
+         return res.json(err)
+       });
+    })
+    res.send('You are a hacker, you scraped the NYT')
+  })
 
-      // Save an empty result object
-      var result = {};
-
-      // Add the title and summary of every link, and save them as properties of the result object
-
-      summary = ""
-      if ($(this).find("ul").length) {
-        summary = $(this).find("li").first().text();
-      } else {
-        summary = $(this).find("p").text();
-      };
-
-      result.title = $(this).find("h2").text();
-      result.summary = summary;
-      result.link = "https://www.nytimes.com" + $(this).find("a").attr("href");
-
-      // Using our Article model, create a new entry
-      // This effectively passes the result object to the entry (and the title and link)
-      var entry = new Article(result);
-
-      // Now, save that entry to the db
-      entry.save(function (err, doc) {
-        // Log any errors
-        if (err) {
-          console.log(err);
-        }
-        // Or log the doc
-        else {
-          console.log(doc);
-        }
-      });
-
-    });
-    // Tell the browser that we finished scraping the text
-    res.send("Scrape Complete");
-
-  });
 });
+
+// })
 
 // This will get the articles we scraped from the mongoDB
 app.get("/articles", function (req, res) {
+
+  db.Article.find({saved:false}).then(function(response){
+    res.json(response)
+  }).catch(function(err){
+    res.json(err)
+  })
   // Grab every doc in the Articles array
-  Article.find({}, function (error, doc) {
-    // Log any errors
-    if (error) {
-      console.log(error);
-    }
-    // Or send the doc to the browser as a json object
-    else {
-      res.json(doc);
-    }
-  });
+  // db.Article.find({saved: false}, function (error, doc) {
+  //   // Log any errors
+  //   if (error) {
+  //     console.log(error);
+  //   }
+  //   // Or send the doc to the browser as a json object
+  //   else {
+  //     res.json(doc);
+  //   }
+  // });
 });
 
 // Grab an article by it's ObjectId
@@ -250,6 +230,8 @@ app.delete("/notes/delete/:note_id/:article_id", function (req, res) {
   });
 });
 
+// Connect to the Mongo DB
+mongoose.connect("mongodb://localhost/Papsmear-NewsScraper", { useNewUrlParser: true });
 
 
 

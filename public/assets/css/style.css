@@ -1,8 +1,11 @@
 body {
   background-image: url("/assets/img/1502gazette.jpg");
+  background-size: 1400px;
   padding-top: 70px;
 }
-
+.panel-body {
+  background: white;
+}
 .deleteNote {
 display: inline-block;
 }

@@ -3,8 +3,10 @@ body {
   background-size: 1400px;
   padding-top: 70px;
 }
-.panel-body {
+.panel-body,
+.panel {
   background: white;
+  margin: 5px;
 }
 .deleteNote {
 display: inline-block;

@@ -21,9 +21,9 @@ var PORT = 3000;
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 // this isn't working..  grrr
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";
 
-mongoose.connect(MONGODB_URI);
+// mongoose.connect(MONGODB_URI);
 
 // Initialize Express
 var app = express();
@@ -101,23 +101,12 @@ app.get("/articles", function (req, res) {
   }).catch(function(err){
     res.json(err)
   })
-  // Grab every doc in the Articles array
-  // db.Article.find({saved: false}, function (error, doc) {
-  //   // Log any errors
-  //   if (error) {
-  //     console.log(error);
-  //   }
-  //   // Or send the doc to the browser as a json object
-  //   else {
-  //     res.json(doc);
-  //   }
-  // });
 });
 
 // Grab an article by it's ObjectId
 app.get("/articles/:id", function (req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-  Article.findOne({ "_id": req.params.id })
+  db.Article.findOne({ "_id": req.params.id })
     // ..and populate all of the notes associated with it
     .populate("note")
     // now, execute our query
@@ -137,7 +126,7 @@ app.get("/articles/:id", function (req, res) {
 // Save an article
 app.post("/articles/save/:id", function (req, res) {
   // Use the article id to find and update its saved boolean
-  Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
+  db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
     // Execute the above query
     .exec(function (err, doc) {
       // Log any errors
@@ -154,7 +143,7 @@ app.post("/articles/save/:id", function (req, res) {
 // Delete an article
 app.post("/articles/delete/:id", function (req, res) {
   // Use the article id to find and update its saved boolean
-  Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": false, "notes": [] })
+  db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": false, "notes": [] })
     // Execute the above query
     .exec(function (err, doc) {
       // Log any errors
@@ -186,7 +175,7 @@ app.post("/notes/save/:id", function (req, res) {
     // Otherwise
     else {
       // Use the article id to find and update it's notes
-      Article.findOneAndUpdate({ "_id": req.params.id }, { $push: { "notes": note } })
+      db.Article.findOneAndUpdate({ "_id": req.params.id }, { $push: { "notes": note } })
         // Execute the above query
         .exec(function (err) {
           // Log any errors
@@ -206,14 +195,14 @@ app.post("/notes/save/:id", function (req, res) {
 // Delete a note
 app.delete("/notes/delete/:note_id/:article_id", function (req, res) {
   // Use the note id to find and delete it
-  Note.findOneAndRemove({ "_id": req.params.note_id }, function (err) {
+  db.Note.findOneAndRemove({ "_id": req.params.note_id }, function (err) {
     // Log any errors
     if (err) {
       console.log(err);
       res.send(err);
     }
     else {
-      Article.findOneAndUpdate({ "_id": req.params.article_id }, { $pull: { "notes": req.params.note_id } })
+      db.Article.findOneAndUpdate({ "_id": req.params.article_id }, { $pull: { "notes": req.params.note_id } })
         // Execute the above query
         .exec(function (err) {
           // Log any errors

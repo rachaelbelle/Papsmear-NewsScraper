@@ -229,14 +229,13 @@ app.delete("/notes/delete/:note_id/:article_id", function (req, res) {
 });
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/Papsmear-NewsScraper", { useNewUrlParser: true });
+// mongoose.connect("mongodb://localhost/Papsmear-NewsScraper", { useNewUrlParser: true });
 
-
-If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-this isn't working..  grrr
+// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+// this isn't working..  grrr
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";
 
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 
 

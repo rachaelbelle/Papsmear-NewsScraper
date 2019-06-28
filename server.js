@@ -229,13 +229,19 @@ app.delete("/notes/delete/:note_id/:article_id", function (req, res) {
 });
 
 // Connect to the Mongo DB
-// mongoose.connect("mongodb://localhost/Papsmear-NewsScraper", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/Papsmear-NewsScraper", { useNewUrlParser: true });
+
+
+// Connect to the Mongo DB
+var mongoURI = process.env.MONGODB_URI || "mongodb://localhost/scraperApp"
+mongoose.connect(mongoURI, { useNewUrlParser: true });
+
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-// this isn't working..  grrr
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";
+// // this isn't working..  grrr
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+// mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 
 

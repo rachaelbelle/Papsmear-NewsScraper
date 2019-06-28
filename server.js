@@ -19,6 +19,22 @@ var Article = require("./models/Article.js");
 
 var PORT = 3000;
 
+// Database configuration with mongoose
+
+const MongoClient = require(‘mongodb’).MongoClient;
+const uri = "mongodb+srv://rachaelbelle:Buster577%2A@cluster0-nyetd.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
+
+// mongoose.connect("mongodb://heroku_jmv816f9:5j1nd4taq42hi29bfm5hobeujd@ds133192.mlab.com:33192/heroku_jmv816f9");
+// //mongoose.connect("mongodb://localhost/mongoscraper");
+// var db = mongoose.connection;
+
+
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 // this isn't working..  grrr
 // var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/papsmear-NewsScraper";

@@ -17,7 +17,7 @@ var Note = require("./models/Note.js");
 var Article = require("./models/Article.js");
 
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Database configuration with mongoose
 

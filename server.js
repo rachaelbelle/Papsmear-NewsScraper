@@ -239,7 +239,7 @@ app.delete("/notes/delete/:note_id/:article_id", function (req, res) {
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 // this isn't working..  grrr
-var db1 = process.env_URI || "mongodb://user:password1@ds263146.mlab.com:63146/heroku_kqt43qmg";
+var db1 = process.env_URI || "mongodb://user:password1@ds263146.mlab.com:63146/heroku_5rw2sdjv";
 
 // mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 

@@ -239,22 +239,18 @@ app.delete("/notes/delete/:note_id/:article_id", function (req, res) {
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 // this isn't working..  grrr
-var mongodb = process.env_URI || "mongodb://localhost/papsmear-NewsScrapermongodb://user:password1@ds263146.mlab.com:63146/heroku_kqt43qmg";
+var db1 = process.env_URI || "mongodb://user:password1@ds263146.mlab.com:63146/heroku_kqt43qmg";
 
 // mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 
-mongoose.connect(mongodb, { useNewUrlParser: true }, function(error) {
+mongoose.connect(db1, { useNewUrlParser: true }, function(error) {
   if (error) {
     console.log(error)
   } else {
     console.log("mongoose connection successful");
   }
 });
-Collapse
-
-
-
 
 
 // Start the server
